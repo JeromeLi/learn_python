@@ -2,6 +2,6 @@
 import sys
 
 print(sys.platform)
-print(2 ** 10)
+print(2 ** 110)
 x = 'Spam!'
 print(x * 8)
