@@ -4,6 +4,15 @@ secret_num = random.randint(1, 10)
 i = 1
 while i <= 3:
 	print('-----------------------')
+
+	if i == 3:
+		print('Last Chance!')
+	elif i == 2:
+		print('Second time!')
+	elif i == 1:
+		print('First time!')
+	else:
+		continue
 	temp = input('Guess a number:')
 	guess = int(temp)
 	if guess == secret_num:
@@ -16,8 +25,5 @@ while i <= 3:
 		else:
 			print('Too large!')
 	i = i + 1
-	if i == 3:
-		print('Last Chance!')
-	else:
-		continue
+
 print('Game over!')
