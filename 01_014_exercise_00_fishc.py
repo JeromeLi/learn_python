@@ -16,20 +16,54 @@
 
 pass_tmp = input('Please enter the password you need to check:')
 
+while (pass_tmp.isspace or len(pass_tmp)) == 0:
+    pass_tmp = input('Please enter the password again!')
+
 
 # define special character check function
-def specical_char_check(x):
-    security_str = r''''~!@#$%^&*()_=-/,.?<>;:[]{}|\'''
+def special_char_check(x):
+    special_char = r'~!@#$%^&*()_=-/,.?<>;:[]{}|\''
+    # print(special_char)
     for each in x:
-        if each in security_str:
+        if each in special_char:
             return True
-        else:
-            return False
+            break
+    else:
+        return False
 
 
+def digital_char_check(x):
+    digital_char = '1234567890'
+    for each in x:
+        if each in digital_char:
+            return True
+            break
+    else:
+        return False
 
-if pass_tmp.isdigit() or pass_tmp.isalpha() or len(pass_tmp) <= 8:
+
+def alpha_char_check(x):
+    alpha_char = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    for each in x:
+        if each in alpha_char:
+            return True
+            break
+    else:
+        return False
+
+
+if digital_char_check(pass_tmp) and alpha_char_check(pass_tmp) and special_char_check(pass_tmp) \
+        and pass_tmp[0].isalpha() and len(pass_tmp) >= 16:
+    print('Your password security level has been evaluate! Level => High ')
+    print('Keep it up!')
+
+elif ((digital_char_check(pass_tmp) and alpha_char_check(pass_tmp)) or \
+      (digital_char_check(pass_tmp) and special_char_check(pass_tmp)) or \
+      (alpha_char_check(pass_tmp) and special_char_check(pass_tmp))) and \
+        len(pass_tmp) > 8:
+    print('Your password security level has been evaluate! Level => Medium ')
+    print('Keep it up!')
+
+elif pass_tmp.isdigit() or pass_tmp.isalpha() or len(pass_tmp) <= 8:
     print('Your password security level has been evaluate! Level => LOW ')
     print('Please raise your password security level!')
-    print('Keep it up!')
-elif pass_tmp.isalnum() or (pass_tmp.isdigit() and )
