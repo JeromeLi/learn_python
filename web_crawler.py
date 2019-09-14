@@ -3,12 +3,14 @@ import time
 import re
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
+import copy
+
 page_count=10000
-base_url='https://m.piaotianzw.com/book_39768/12675326.html'
+base_url='https://m.piaotianzw.com/book_39768/37619656.html'
 for x in range(page_count):
     #time.sleep(1)
     html = urlopen(base_url, context=ssl._create_unverified_context())
-    html_url = urlopen(base_url, context=ssl._create_unverified_context())
+    html_url = copy.deepcopy(html)
     #print(type(data))
     soup = BeautifulSoup(html, "html.parser")
     # kill all script and style elements
