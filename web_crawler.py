@@ -18,8 +18,8 @@ replace_text_dict_global = {'关灯\n': '', '护眼\n': '', '字体：\n': '', '
                             '电脑版\n': '', '我的书架': ''}
 replace_text_dict_nextpage = {'\n-->>本章未完，点击下一页继续阅读\n': '', '-->>本章未完，点击下一页继续阅读\n': '',
                               '\n>本章未完，点击下一页继续阅读\n': '', '>本章未完，点击下一页继续阅读\n': ''}
-page_count = 10
-base_url = 'https://m.piaotianzw.com/book_39768/37619656.html'
+page_count = 100000
+base_url = 'https://m.piaotianzw.com/book_39768/20009610.html'
 
 for x in range(page_count):
     # time.sleep(1)
@@ -65,10 +65,11 @@ for x in range(page_count):
 
     if text.find('继续阅读') != -1:
         text = text_replace(text, replace_text_dict_nextpage)
-        text = re.sub(r'\b第.+?网\n\b', '', text, re.MULTILINE)
+        text = re.sub(r'\b第.+?网\n', '', text, re.MULTILINE)
         # print('chapter_end')
         print(text, end='')
     else:
-        text = re.sub(r'\b第.+?网\n\b', '', text, re.MULTILINE)
-        text = re.sub(r'\b第.+?\n\b', '', text, re.MULTILINE)
+        text = re.sub(r'\b第.+?\n', '', text, re.MULTILINE)
+        text = re.sub(r'\b第.+?网\n', '', text, re.MULTILINE)
+
         print(text)
