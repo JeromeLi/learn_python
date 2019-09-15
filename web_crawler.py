@@ -27,9 +27,9 @@ for x in range(page_count):
     req = urllib.request.Request(base_url)
     req.add_header = ('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0')
     html = urllib.request.urlopen(req, context=ssl._create_unverified_context()).read()
-
-
+    write_to_file = open('./swzz.txt', 'ab')
     if base_url.find('htm') == -1:
+        write_to_file.close()
         break
     else:
         soup = BeautifulSoup(html, "html.parser")
@@ -56,12 +56,19 @@ for x in range(page_count):
         if text.find('继续阅读') != -1:
             text = text_replace(text, replace_text_dict_nextpage)
             text = re.sub(r'\b第.+?网\n', '', text, re.MULTILINE)
-            # print('chapter_end')
-            print(text, end='')
+            # print(text, end='')
+            file_context = text.encode()
+            write_to_file.write(file_context)
+
         else:
             text = re.sub(r'\b第.+?\n', '', text, re.MULTILINE)
             text = re.sub(r'\b第.+?网\n', '', text, re.MULTILINE)
-            print(text)
+            file_context = text.encode()
+            write_to_file.write(file_context)
+            print('Insert new line')
+            lr_insert='\n\n'
+            file_context = lr_insert.encode()
+            write_to_file.write(file_context)
 
     path_0 = re.findall(b'<a id="pb_next" href="(.+?)">', html)
     path_0_str = b''.join(path_0)
@@ -71,9 +78,9 @@ for x in range(page_count):
         path_final = path_split[2]
         next_page = 'https://m.piaotianzw.com/book_39768/' + path_final
         base_url = next_page
-
+        print('Write ', path_final, ' chapter')
     else:
         next_page = 'https://m.piaotianzw.com/book_39768/' + path_0_str
         base_url = next_page
-        
+        print('Write ', path_0_str, ' chapter')
     time.sleep(2)
