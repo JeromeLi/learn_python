@@ -30,6 +30,7 @@ for x in range(page_count):
     write_to_file = open('./swzz.txt', 'ab')
     if base_url.find('htm') == -1:
         write_to_file.close()
+        print('No more chapters, closing file... done!')
         break
     else:
         soup = BeautifulSoup(html, "html.parser")
