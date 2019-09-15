@@ -19,57 +19,61 @@ replace_text_dict_global = {'关灯\n': '', '护眼\n': '', '字体：\n': '', '
 replace_text_dict_nextpage = {'\n-->>本章未完，点击下一页继续阅读\n': '', '-->>本章未完，点击下一页继续阅读\n': '',
                               '\n>本章未完，点击下一页继续阅读\n': '', '>本章未完，点击下一页继续阅读\n': ''}
 page_count = 100000
-base_url = 'https://m.piaotianzw.com/book_39768/20009610.html'
+# base_url = 'https://m.piaotianzw.com/book_39768/20009610.html'
+base_url = 'https://m.piaotianzw.com/book_39768/12675326.html'
 
 for x in range(page_count):
     # time.sleep(1)
     req = urllib.request.Request(base_url)
     req.add_header = ('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0')
     html = urllib.request.urlopen(req, context=ssl._create_unverified_context()).read()
+
+
+    if base_url.find('htm') == -1:
+        break
+    else:
+        soup = BeautifulSoup(html, "html.parser")
+        # kill all script and style elements
+        for script in soup(["script", "style"]):
+            script.extract()  # rip it out
+        # get text
+        text = soup.get_text()
+        # break into lines and remove leading and trailing space on each
+        lines = (line.strip() for line in text.splitlines())
+        # break multi-headlines into a line each
+        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+        # drop blank lines
+
+        text = '\n'.join(chunk for chunk in chunks if chunk)
+        text = text_replace(text, replace_text_dict_global)
+        # file_context = text.encode()
+        # filename_str = './' + str(x) + '.txt'
+        # # print('filename:', filename_str)
+        # file_handle = open(filename_str, 'wb')
+        # file_handle.write(file_context)
+        # file_handle.close()
+
+        if text.find('继续阅读') != -1:
+            text = text_replace(text, replace_text_dict_nextpage)
+            text = re.sub(r'\b第.+?网\n', '', text, re.MULTILINE)
+            # print('chapter_end')
+            print(text, end='')
+        else:
+            text = re.sub(r'\b第.+?\n', '', text, re.MULTILINE)
+            text = re.sub(r'\b第.+?网\n', '', text, re.MULTILINE)
+            print(text)
+
     path_0 = re.findall(b'<a id="pb_next" href="(.+?)">', html)
     path_0_str = b''.join(path_0)
     path_0_str = path_0_str.decode()
     if path_0_str.find('/') != -1:
         path_split = re.split('/', path_0_str)
-        # print (path_split)
         path_final = path_split[2]
-        # print(type(path_final))
-        # print(path_final)
         next_page = 'https://m.piaotianzw.com/book_39768/' + path_final
-        # print(next_page)
         base_url = next_page
+
     else:
         next_page = 'https://m.piaotianzw.com/book_39768/' + path_0_str
-        # print(next_page)
         base_url = next_page
-    soup = BeautifulSoup(html, "html.parser")
-    # kill all script and style elements
-    for script in soup(["script", "style"]):
-        script.extract()  # rip it out
-    # get text
-    text = soup.get_text()
-    # break into lines and remove leading and trailing space on each
-    lines = (line.strip() for line in text.splitlines())
-    # break multi-headlines into a line each
-    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-    # drop blank lines
-
-    text = '\n'.join(chunk for chunk in chunks if chunk)
-    text = text_replace(text, replace_text_dict_global)
-    file_context = text.encode()
-    filename_str = './' + str(x) + '.txt'
-    # print('filename:', filename_str)
-    file_handle = open(filename_str, 'wb')
-    file_handle.write(file_context)
-    file_handle.close()
-
-    if text.find('继续阅读') != -1:
-        text = text_replace(text, replace_text_dict_nextpage)
-        text = re.sub(r'\b第.+?网\n', '', text, re.MULTILINE)
-        # print('chapter_end')
-        print(text, end='')
-    else:
-        text = re.sub(r'\b第.+?\n', '', text, re.MULTILINE)
-        text = re.sub(r'\b第.+?网\n', '', text, re.MULTILINE)
-
-        print(text)
+        
+    time.sleep(2)
