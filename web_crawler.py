@@ -3,7 +3,6 @@ import time
 import re
 from bs4 import BeautifulSoup
 import urllib.request
-import copy
 
 
 def text_replace(string, substitutions):
