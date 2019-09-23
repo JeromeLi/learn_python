@@ -1,7 +1,10 @@
 import re
+# from termcolor import colored
+from os import path, system, name, kill, getpid
+from time import sleep
 import requests
 from lxml.html import document_fromstring
-from termcolor import colored
+
 
 def remove_space_line(x):
     # break into lines and remove leading and trailing space on each
@@ -12,10 +15,12 @@ def remove_space_line(x):
     y = '\n'.join(chunk for chunk in chunks if chunk)
     return y
 
+
 def text_replace(string, substitutions):
     substrings = sorted(substitutions, key=len, reverse=True)
     regex = re.compile('|'.join(map(re.escape, substrings)))
     return regex.sub(lambda match: substitutions[match.group(0)], string)
+
 
 def add_title_fw():
     file_title = title.encode()
@@ -24,11 +29,40 @@ def add_title_fw():
     file_title_return = title_return.encode()
     write_to_file.write(file_title_return)
 
+
+def clear():
+    # for windows
+    if name == 'nt':
+        _ = system('cls')
+    # for mac and linux(here, os.name is 'posix')
+    else:
+        _ = system('clear')
+
+def nomore_page_close(y):
+    if 'htm' not in y:
+        write_to_file.close()
+        print('No more chapter, stop to send request!')
+
+
 replace_symbol_dict = {'-->>': ''}
 ua = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'
 headers = {'user-agent': ua}
 base_url = 'https://m.piaotianzw.com/book_39768/12675326.html'
 x = 0
+# Determine if the file name exists
+for n in range(5):
+    clear()
+    file_name = input('Input a filename:')
+    if not path.exists(file_name):
+        break
+    else:
+        if n == 4:
+            print('Are you kidding me?')
+            print('Program is terminating.....')
+            sleep(2)
+            kill(getpid(), 9)
+        print('The file name is existed! Please another file name.')
+        sleep(2)
 
 while True:
     r = requests.get(base_url, headers=headers)
@@ -38,7 +72,7 @@ while True:
     title = remove_space_line(doc.xpath("//body[@id='nr_body']//h1")[0].text_content())
     content = remove_space_line(doc.xpath("//div[@id='nr']//div")[0].text_content())
     # print(doc.xpath("//div[@id='nr1']//center"))
-    write_to_file = open('./swzz.txt', 'ab')
+    write_to_file = open(file_name, 'ab')
     if base_url.find('htm') == -1:
         write_to_file.close()
         print('No more chapters, closing file... done!')
@@ -78,5 +112,7 @@ while True:
         # print(doc.xpath("//td[@class='next']//a")[1].get('href'))
         if '/' in doc.xpath("//td[@class='next']//a")[1].get('href'):
             base_url = 'https://m.piaotianzw.com' + doc.xpath("//td[@class='next']//a")[1].get('href')
+            nomore_page_close(base_url)
         else:
             base_url = 'https://m.piaotianzw.com/book_39768/' + doc.xpath("//td[@class='next']//a")[1].get('href')
+            nomore_page_close(base_url)
