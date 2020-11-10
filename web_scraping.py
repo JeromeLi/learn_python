@@ -95,9 +95,12 @@ while True:
     r.encoding = r.apparent_encoding
     doc = document_fromstring(r.text)
     # print(doc.xpath("//body[@id='nr_body']//h1")[0].text_content(),base_url)
-    title = remove_space_line(doc.xpath("//body[@id='nr_body']//h1")[0].text_content())
-    content = remove_space_line(doc.xpath("//div[@id='nr']//div")[0].text_content())
+    title = remove_space_line(doc.xpath("/html/body/div[2]/div[2]/div[2]/p[1]")[0].text_content())
+    content = remove_space_line(doc.xpath("//*[@id='htmlContent']")[0].text_content())
     # print(doc.xpath("//div[@id='nr1']//center"))
+    print('title',title)
+    print('content',content)
+    break
     write_to_file = open(file_name, 'ab')
     if base_url.find('htm') == -1:
         write_to_file.close()
